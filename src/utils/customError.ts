@@ -1,5 +1,6 @@
 export class BaseCustomError extends Error {
     [x: string]: any;
+
     constructor(message: any, statusCode: number) {
       super(message); // Call the super constructor (Error class)
       this.statusCode = statusCode; // Custom property to hold status code

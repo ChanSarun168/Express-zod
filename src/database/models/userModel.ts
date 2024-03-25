@@ -2,7 +2,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 import { number } from 'zod';
 
 // Define the interface for the user document
-interface IUser extends Document {
+export interface IUser extends Document {
   username: string;
   email: string;
   password: string;
@@ -18,4 +18,4 @@ const UserSchema = new Schema<IUser>({
 });
 
 // Creating and exporting the User model
-export const UserModel = mongoose.model<IUser>('User', UserSchema);
+export const  UserModel = mongoose.model<IUser>('User', UserSchema);

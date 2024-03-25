@@ -10,23 +10,13 @@ export const userRouter = express.Router();
 userRouter.get("/", userController.getAll);
 
 // CrateUser
-userRouter.post(
-  "/",
-  (req: Request, res: Response, next: NextFunction) => {
-    validateUserData(req, res, next, userSchema);
-  },
-  userController.createUser
-);
+userRouter.post("/", validateUserData(userSchema), userController.createUser);
 
 // getUserById
 userRouter.get("/:userId", validateMongooseId, userController.getById);
 
 // updateUser
-userRouter.put(
-  "/:userId",
-  validateMongooseId,
-  (req: Request, res: Response, next: NextFunction) => {
-    validateUserData(req, res, next, userSchema);
-  },
-  userController.updateUser
-);
+userRouter.put("/:userId",validateMongooseId,validateUserData(userSchema),userController.updateUser);
+
+// deleteUser
+userRouter.delete("/:userId", validateMongooseId, userController.deleteById);

@@ -1,11 +1,16 @@
 import { Response, Request, NextFunction } from "express";
-import { UserModel } from "../models/userModel";
+import { UserModel } from "../database/models/userModel";
 import { BaseCustomError } from "../utils/customError";
+import { StatusCode } from "../utils/consts";
+import { UserService } from "../services/userService";
 
 export const userController = {
   getAll: async function (req: Request, res: Response, next: NextFunction) {
+
+    const userService = new UserService();
+
     try {
-      const users = await UserModel.find({});
+      const users = await userService.getAllUser();
       if (users) {
         res.status(200).json({
           status: "success",
@@ -23,53 +28,64 @@ export const userController = {
   },
 
   getById: async function (req: Request, res: Response, next: NextFunction) {
-    const RouteId = req.params.userId; // Assuming the route parameter is userId
+
+    const userService = new UserService();
+
     try {
-      const User = await UserModel.findById(RouteId);
-      if (User) {
-        res.json({ status: "success", message: "User found!!!", data: User });
-      } else {
-        const customError = new BaseCustomError("id Not found", 404);
-        next(customError);
-      }
+      const User = await userService.getById(req.params.userId);
+      res.json({ status: "success", message: "User found!!!", data: User });
     } catch {
-      const customError = new BaseCustomError("Server Error", 500);
+      const customError = new BaseCustomError(
+        "Server Error",
+        StatusCode.InternalServerError
+      );
       next(customError);
     }
   },
+
   createUser: async function (req: Request, res: Response, next: NextFunction) {
+
+    const userService = new UserService();
+
     try {
       const { username, email, password } = req.body;
-      const newUser = new UserModel({ username, email, password });
-      await newUser.save();
+      const newUser = await userService.addUser({ username, email, password });
       res.status(201).json(newUser);
     } catch {
       const customError = new BaseCustomError("Failed to create user.", 500);
-      console.log(customError.statusCode);
       next(customError);
     }
   },
+
   updateUser: async function (req: Request, res: Response, next: NextFunction) {
+
+    const userService = new UserService();
+    
     try {
       const { username, email, password } = req.body;
-      const user = await UserModel.findByIdAndUpdate(
-        req.params.userId,
-        {
-          username,
-          email,
-          password,
-        },
-        { new: true } // To return the updated document
-      );
-      if (user) {
+      const id = req.params.userId;
+
+      const user = await userService.updateUser(id, {
+        username,
+        email,
+        password,
+      });
         res.json({ status: "success", message: "User updated!!!", data: user });
-      } else {
-        const customError = new BaseCustomError("id Not found", 404);
-        next(customError);
-      }
-    } catch {
-      const customError = new BaseCustomError("Server Error", 500);
-      next(customError);
+    } catch (error:unknown | any) {
+      next(new BaseCustomError(error.message, error.statusCode));
     }
   },
+
+  deleteById: async function (req: Request, res: Response, next: NextFunction) {
+
+    const userService = new UserService();
+
+    try {
+      await userService.deleteUser(req.params.userId);
+      res.json({ status: "success", message: "User deleted successfully!" });
+    } catch (error:unknown | any) {
+      next(new BaseCustomError(error.message, error.statusCode));
+    }
+  },
+
 };

@@ -3,18 +3,18 @@ import connectToDatabase from './utils/dbConnection';
 import errorHandler from './middlewares/errorHandler';
 import { userRouter } from './routers/users.route';
 import bodyParser from 'body-parser';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerDocument } from './swagger';
 
 const app:Application = express();
-const port = 5000;
+const port = process.env.PORT || 4000;
 
 app.use(bodyParser.urlencoded({extended:true,limit:"30mb"}));
 app.use(bodyParser.json());
 
 
-app.get("/",(req:Request,res:Response)=>{
-    res.send("Hello World")
-})
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/user",userRouter);
 
 // global handler
