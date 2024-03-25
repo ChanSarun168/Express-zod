@@ -19,7 +19,7 @@ describe("errorHandler middleware", () => {
     errorHandler(err, req, res, next);
 
     // Check if status and json methods were called with correct arguments
-    expect(res.status).toHaveBeenCalledWith(404);
+     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.json).toHaveBeenCalledWith({
       statusCode: 404,
       message: "Test error message",
@@ -36,7 +36,7 @@ describe("errorHandler middleware", () => {
     // Mock Request, Response, and NextFunction
     const req = {} as Request;
     const res = {} as Response;
-    const next = jest.fn() as NextFunction;
+    const next = jest.fn() as NextFunction;  
 
     // Call errorHandler middleware
     errorHandler(err, req, res, next);

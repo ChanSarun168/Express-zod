@@ -33,7 +33,7 @@ export const userController = {
 
     try {
       const User = await userService.getById(req.params.userId);
-      res.json({ status: "success", message: "User found!!!", data: User });
+      res.status(200).json({ status: "success", message: "User found!!!", data: User });
     } catch {
       const customError = new BaseCustomError(
         "Server Error",

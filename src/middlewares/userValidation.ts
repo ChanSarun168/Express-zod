@@ -13,12 +13,12 @@ export const validateUserData = (ValidatinSchema: z.ZodObject<any, any>) => {
         // If it's a ZodError, handle it properly
         const errorMessages = error.errors.map((err) => err.message); // Extract error messages
         const customError = new BaseCustomError(errorMessages, 400);
-        console.error("Validation Error:", error.errors); // Log the validation error
-        next(customError);
+        // console.error("Validation Error:", error.errors); // Log the validation error
+        return next(customError);
       } else {
         // If it's another type of error, handle it accordingly
         console.error("Unknown Error:", error); // Log the unknown error
-        next(error);
+        return next(error);
       }
     }
   };
