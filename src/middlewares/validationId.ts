@@ -14,7 +14,7 @@ const validateMongooseId = (
   if (!mongoose.isValidObjectId(userId)) {
     const customError = new BaseCustomError('id Invalide', StatusCode.NotFound);
     console.log(customError.statusCode)
-    _next(customError);
+    return _next(customError);
   }
   _next();
 };

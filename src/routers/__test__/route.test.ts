@@ -34,7 +34,7 @@ describe('userRouter', () => {
 
   // Test for GET /users/:userId
   test('should get a user by ID', async () => {
-    const userId = 'valid-user-id';
+    const userId = '4edd40c86762e0fb12000003';
     const response = await request.get(`/user/${userId}`);
     expect(response.status).toBe(200);
     // Add assertions for response body with user data
