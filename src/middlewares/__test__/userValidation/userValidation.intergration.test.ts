@@ -1,11 +1,12 @@
 import express, { Request, Response, NextFunction } from "express";
-import request from "supertest";
+import supertest from "supertest";
 import z from "zod";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import { validateUserData } from "../../userValidation";
+import app from "../../../app";
 
 // Create an Express application
-const app = express();
+const request = supertest(app)
 
 let mongoServer: MongoMemoryServer;
 
@@ -51,26 +52,26 @@ describe("validateUserData middleware integration test", () => {
       password: "short",
     };
 
-    const response = await request(app).post("/user").send(invalidUserData);
+    const response = await request.post("/user").send(invalidUserData);
 
     expect(response.status).toBe(400);
     expect(response.body).toEqual({
       statusCode: 400,
       message:
-        "Username must be at least 3 characters long, Please input a valid email address, Password must be at least 6 characters long",
+        "Username must Input At least 3 Character,Please Input In email Form,Password must Input At least 6 Characters",
     });
   });
 
-  it("should return 200 if user data is valid", async () => {
+  it("should return 201 if user data is valid", async () => {
     const validUserData = {
       username: "john_doe",
       email: "john@example.com",
       password: "password123",
     };
 
-    const response = await request(app).post("/user").send(validUserData);
+    const response = await request.post("/user").send(validUserData);
 
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(201);
     expect(response.body).toEqual({
       message: "User data validated successfully",
       data: validUserData,

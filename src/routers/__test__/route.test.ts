@@ -53,7 +53,8 @@ describe('userRouter', () => {
 
   // Test for GET /users/:userId
   test('should get a user by ID', async () => {
-    const userId = '65fd09fdfe46d779bda6505e';
+
+    const userId = '65f7a101867a255c3a26888a';
     const response = await request.get(`/user/${userId}`);
 
     // Ensure the server responded with a success status code
