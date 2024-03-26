@@ -15,6 +15,13 @@ const UserSchema = new Schema<IUser>({
   email: { type: String, required: true },
   password: { type: String, required: true },
   // Define more fields here
+},
+{
+  toJSON: {
+    transform(doc, ret) {
+      delete ret.__v;
+    },
+  },
 });
 
 // Creating and exporting the User model

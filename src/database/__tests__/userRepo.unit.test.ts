@@ -4,7 +4,6 @@ import { UserModel } from "../models/userModel";
 
 jest.mock("../models/userModel"); //clone mongo to use
 
-
 describe("User Repo with Unit test", () => {
   afterEach(() => {
     jest.clearAllMocks();
@@ -12,10 +11,20 @@ describe("User Repo with Unit test", () => {
 
   it("getAllUsers should return all users", async () => {
     const users = [
-      { _id: "user_id_1", username: "User1", email: "user1@example.com", password: "password1" },
-      { _id: "user_id_2", username: "User2", email: "user2@example.com", password: "password2" }
+      {
+        _id: "user_id_1",
+        username: "User1",
+        email: "user1@example.com",
+        password: "password1",
+      },
+      {
+        _id: "user_id_2",
+        username: "User2",
+        email: "user2@example.com",
+        password: "password2",
+      },
     ];
-    (UserModel.find as jest.Mock).mockResolvedValue(users); // convert 
+    (UserModel.find as jest.Mock).mockResolvedValue(users); // convert
     const userRepo = new UserRepo();
     const result = await userRepo.getall();
     expect(result).toEqual(users);
@@ -24,7 +33,12 @@ describe("User Repo with Unit test", () => {
 
   it("getUserById should return user by ID", async () => {
     const userId = "5fc305b4805c7462c89f9db1";
-    const user = { _id: userId, username: "User1", email: "user1@example.com", password: "password1" };
+    const user = {
+      _id: userId,
+      username: "User1",
+      email: "user1@example.com",
+      password: "password1",
+    };
     (UserModel.findById as jest.Mock).mockResolvedValue(user);
     const userRepo = new UserRepo();
     const result = await userRepo.getById(userId);
@@ -33,7 +47,11 @@ describe("User Repo with Unit test", () => {
   });
 
   it("createUser should create a new user", async () => {
-    const userData = { username: "User1", email: "user1@example.com", password: "password1" };
+    const userData = {
+      username: "User1",
+      email: "user1@example.com",
+      password: "password1",
+    };
     const newUser = { _id: "new_user_id", ...userData };
     (UserModel.prototype.save as jest.Mock).mockResolvedValue(newUser);
     const userRepo = new UserRepo();
@@ -44,9 +62,13 @@ describe("User Repo with Unit test", () => {
 
   it("should update user by ID", async () => {
     const userId = "5fc305b4805c7462c89f9db1";
-    const updatedUserData = { username: "Updated User", email: "updated@example.com", password: "updatedpassword" };
+    const updatedUserData = {
+      username: "Updated User",
+      email: "updated@example.com",
+      password: "updatedpassword",
+    };
     const updatedUser = { _id: userId, ...updatedUserData };
-    (UserModel.findByIdAndUpdate as jest.Mock).mockResolvedValue(updatedUser);  
+    (UserModel.findByIdAndUpdate as jest.Mock).mockResolvedValue(updatedUser);
     const userRepo = new UserRepo();
     const result = await userRepo.updateById(userId, updatedUserData);
     // Assert that the updated user is returned
@@ -61,7 +83,11 @@ describe("User Repo with Unit test", () => {
 
   it("should return null for invalid user ID", async () => {
     const invalidUserId = "invalid_id";
-    const updatedUserData = { username: "Updated User", email: "updated@example.com", password: "updatedpassword" };
+    const updatedUserData = {
+      username: "Updated User",
+      email: "updated@example.com",
+      password: "updatedpassword",
+    };
     (UserModel.findByIdAndUpdate as jest.Mock).mockResolvedValue(null);
     const userRepo = new UserRepo();
     const result = await userRepo.updateById(invalidUserId, updatedUserData);
@@ -70,12 +96,15 @@ describe("User Repo with Unit test", () => {
     // Assert that UserModel.findByIdAndUpdate is not called
     expect(UserModel.findByIdAndUpdate).not.toHaveBeenCalled();
   });
-  
 
   it("deleteUser should delete user by ID", async () => {
-    
     const userId = "5fc305b4805c7462c89f9db1";
-    const deletedUser = { _id: userId, username: "Deleted User", email: "deleted@example.com", password: "deletedpassword" };
+    const deletedUser = {
+      _id: userId,
+      username: "Deleted User",
+      email: "deleted@example.com",
+      password: "deletedpassword",
+    };
     (UserModel.findByIdAndDelete as jest.Mock).mockResolvedValue(deletedUser);
     const userRepo = new UserRepo();
     const result = await userRepo.deleteById(userId);

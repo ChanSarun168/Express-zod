@@ -4,24 +4,24 @@ import z from "zod";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import { validateUserData } from "../../userValidation";
 import app from "../../../app";
+import mongoose from "mongoose";
+import { UserModel } from "../../../database/models/userModel";
 
 // Create an Express application
 const request = supertest(app)
 
-let mongoServer: MongoMemoryServer;
-
+let mongoServer: MongoMemoryServer | undefined ;
+// Before run testing
 beforeAll(async () => {
-  // Start MongoDB memory server before running tests
   mongoServer = await MongoMemoryServer.create();
   const mongoUri = mongoServer.getUri();
-
-  // Configure your app to use the MongoDB URI
-  process.env.MONGODB_URI = mongoUri;
+  await mongoose.connect(mongoUri);
 });
 
+// after run testing
 afterAll(async () => {
-  // Stop MongoDB memory server after running tests
-  await mongoServer.stop();
+  await mongoose.disconnect();
+  await mongoServer?.stop();
 });
 
 // Define a Zod schema for user data validation
@@ -33,7 +33,7 @@ const userSchema = z.object({
 
 // Define a route handler using the validateUserData middleware
 app.post(
-  "/user",
+  "/users",
   validateUserData(userSchema),
   (req: Request, res: Response, next: NextFunction) => {
     // If the middleware passes without errors, respond with success
@@ -45,6 +45,16 @@ app.post(
 
 // Integration test for the validateUserData middleware
 describe("validateUserData middleware integration test", () => {
+
+  afterEach(async () => {
+    try {
+      await UserModel.deleteMany({});
+    } catch (error) {
+      console.error("Error during cleanup:", error);
+      throw error;
+    }
+  });
+
   it("should return 400 if user data is invalid", async () => {
     const invalidUserData = {
       username: "ab",
@@ -52,7 +62,7 @@ describe("validateUserData middleware integration test", () => {
       password: "short",
     };
 
-    const response = await request.post("/user").send(invalidUserData);
+    const response = await request.post("/users").send(invalidUserData);
 
     expect(response.status).toBe(400);
     expect(response.body).toEqual({
@@ -69,11 +79,12 @@ describe("validateUserData middleware integration test", () => {
       password: "password123",
     };
 
-    const response = await request.post("/user").send(validUserData);
+    const response = await request.post("/users").send(validUserData);
 
     expect(response.status).toBe(201);
-    expect(response.body).toEqual({
-      message: "User data validated successfully",
+    expect(response.body).toMatchObject({
+      message: "User created!!!",
+      status: "success",
       data: validUserData,
     });
   });
