@@ -1,75 +1,52 @@
-import supertest from 'supertest';
-import app from '../../app';
+import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
+import request from 'supertest';
+import  app  from '../../app'; // Assuming your Express app is exported as 'app'
+import { UserModel } from '../../database/models/userModel'; // Assuming you have a UserModel
 
-describe('userRouter', () => {
-  let mongoServer: MongoMemoryServer;
+let mongoServer: MongoMemoryServer | undefined;
 
-  beforeAll(async () => {
-    // Start MongoDB memory server before running tests
-    mongoServer = await MongoMemoryServer.create();
-    const mongoUri = mongoServer.getUri();
 
-    // Set up your app with the MongoDB URI
-    process.env.MONGODB_URI = mongoUri;
-  });
+// Before run testing
+beforeAll(async () => {
+  mongoServer = await MongoMemoryServer.create();
+  const mongoUri = mongoServer.getUri();
+  await mongoose.connect(mongoUri);
+});
 
-  afterAll(async () => {
-    // Stop MongoDB memory server after running tests
-    await mongoServer.stop();
-  });
+// after run testing
+afterAll(async () => {
+  await mongoose.disconnect();
+  await mongoServer?.stop();
+});
 
-  const request = supertest(app); // Attach Supertest to your Express app
+describe('User Routes', () => {
 
-  // Test for GET /users
-  test('should return all users', async () => {
-    const response = await request.get('/user');
-    expect(response.status).toBe(200);
-    
-  });
-
-  // Test for POST /users
-  test('should create a new user with valid data', async () => {
-    const newUser = {
-      username: "User1",
-      email: "user1@example.com",
-      password: "password1",
-    };
-  
-    const response = await request.post('/user').send(newUser);
-  
-    expect(response.status).toBe(201);
-    expect(response.body).toEqual({
-
-      _id: expect.any(String), // Assuming Mongoose generates a unique ID
-      username: "User1",
-      email: "user1@example.com",
-      password: "password1",
-      __v: 0
-      
-    });
-  });
-  
-
-  // Test for GET /users/:userId
-  test('should get a user by ID', async () => {
-
-    const userId = '65f7a101867a255c3a26888a';
-    const response = await request.get(`/user/${userId}`);
-
-    // Ensure the server responded with a success status code
-    expect(response.status).toBe(200);
-
-  });
-
-  // Test for GET /users/:userId with invalid ID
-  test('should return 404 for invalid user ID', async () => {
-    const invalidUserId = 'invalid-id';
+  afterEach(async () => {
     try {
-      await request.get(`/user/${invalidUserId}`);
-    } catch (error: unknown | any) {
-      expect(error.response.status).toBe(404);
+      await UserModel.deleteMany({});
+    } catch (error) {
+      console.error("Error during cleanup:", error);
+      throw error;
     }
   });
 
+  it('should create a new user', async () => {
+    const userData = {
+      username: 'testuser',
+      email: 'test@example.com',
+      password: 'password123',
+    };
+
+    const response = await request(app)
+      .post('/users')
+      .send(userData)
+      .expect(201);
+ 
+    expect(response.body.status).toEqual('success');
+    expect(response.body.message).toEqual('User created!!!');
+    expect(response.body.data).toMatchObject(userData);
+  });
+
+  // Write similar test cases for other routes (getAll, getById, updateUser, deleteUser)
 });

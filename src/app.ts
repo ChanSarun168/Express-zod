@@ -1,5 +1,4 @@
 import express, { Application , Request , Response} from 'express'
-import connectToDatabase from './utils/dbConnection';
 import errorHandler from './middlewares/errorHandler';
 import { userRouter } from './routers/users.route';
 import bodyParser from 'body-parser';
@@ -52,11 +51,5 @@ app.use("/users",userRouter);
 // global handler
 app.use(errorHandler)
 
-// open port and connect to database
-connectToDatabase().then(()=>{
-    app.listen(port,()=>{
-    console.log(`Server is running on http://localhost:${port}`);
-    })
-})
 
 export default app;
