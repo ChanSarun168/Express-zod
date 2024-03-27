@@ -27,7 +27,7 @@ userRouter.get('/', async (_req, res, next) => {
 // CreateUser
 userRouter.post('/', validateUserData(userSchema), async (req, res, next) => {
   try {
-    const newUser: typeof UserModel = await userController.createUser(req); // Correctly use typeof UserModel
+    const newUser: typeof UserModel = await userController.createUser(req.body); // Correctly use typeof UserModel
     res.status(201).json({ status: 'success', message: 'User created!!!', data: newUser });
   } catch (error) {
     next(error);
@@ -53,7 +53,7 @@ userRouter.get('/:userId', validateMongooseId, async (req, res, next) => {
 userRouter.put('/:userId', validateMongooseId, validateUserData(userSchema), async (req, res, next) => {
   try {
     const userId = req.params.userId;
-    const updatedUser: typeof UserModel | null = await userController.updateUser(userId, req); // Correctly use typeof UserModel
+    const updatedUser: typeof UserModel | null = await userController.updateUser(userId, req.body); // Correctly use typeof UserModel
     if (updatedUser) {
       res.status(200).json({ status: 'success', message: 'User updated!!!', data: updatedUser });
     } else {
