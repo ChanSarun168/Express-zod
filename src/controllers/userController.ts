@@ -7,15 +7,21 @@ import {
   Route,
   Request,
   Response,
-  Body
+  Body,
 } from "tsoa";
 import { UserService } from "../services/userService";
 import { StatusCode } from "../utils/consts";
 
-interface User{
-  username:string,
-  email: string,
-  password: string
+interface ErrorResponse {
+  errorCode: number;
+  errorMessage: string;
+  errorDetails?: string;
+}
+
+interface User {
+  username: string;
+  email: string;
+  password: string;
 }
 
 @Route("users")
@@ -33,8 +39,12 @@ export class UserController extends Controller {
   }
 
   @Post("/")
-  @Response<Error>(StatusCode.InternalServerError, 'Internal Server Error')
-  public async createUser(@Body() requestBody:User): Promise<any> {
+  @Response<ErrorResponse>(StatusCode.BadRequest, "Internal Server Error", {
+    errorCode: StatusCode.BadRequest,
+    errorMessage: "Invalid user data",
+    errorDetails: "Please provide valid username, email, and password",
+  })
+  public async createUser(@Body() requestBody: User): Promise<any> {
     const { username, email, password } = requestBody;
     await this.userService.addUser({ username, email, password });
   }
@@ -45,9 +55,38 @@ export class UserController extends Controller {
   }
 
   @Put("/:userId")
-  @Response<Error>(StatusCode.InternalServerError, "Internal Server Error")
-  @Response<Error>(StatusCode.NotFound, "User not found")
-  public async updateUser(userId: string, @Body() requestBody:User): Promise<any> {
+  // error 404
+  @Response<ErrorResponse>(StatusCode.NotFound, "Not Found", {
+    errorCode: StatusCode.NotFound,
+    errorMessage: "User not found",
+    errorDetails: "The requested user ID was not found in the system",
+  })
+  // error 500
+  @Response<ErrorResponse>(
+    StatusCode.InternalServerError,
+    "Internal Server Error",
+    {
+      errorCode: StatusCode.InternalServerError,
+      errorMessage: "Internal Server Error",
+      errorDetails: "An unexpected error occurred while processing the request",
+    }
+  )
+  // error 403
+  @Response<ErrorResponse>(StatusCode.Forbidden, "Permission Denied", {
+    errorCode: StatusCode.Forbidden,
+    errorMessage: "Permission Denied",
+    errorDetails: "You do not have permission to perform this operation.",
+  })
+  // error 401
+  @Response<ErrorResponse>(StatusCode.Unauthorized, "Unauthorized", {
+    errorCode: StatusCode.Unauthorized,
+    errorMessage: "Unauthorized",
+    errorDetails: "Authentication credentials are missing or invalid.",
+  })
+  public async updateUser(
+    userId: string,
+    @Body() requestBody: User
+  ): Promise<any> {
     const { username, email, password } = requestBody;
     return await this.userService.updateUser(userId, {
       username,

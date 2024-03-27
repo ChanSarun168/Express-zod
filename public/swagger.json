@@ -7,21 +7,22 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
-			"Error": {
+			"ErrorResponse": {
 				"properties": {
-					"name": {
+					"errorCode": {
+						"type": "number",
+						"format": "double"
+					},
+					"errorMessage": {
 						"type": "string"
 					},
-					"message": {
-						"type": "string"
-					},
-					"stack": {
+					"errorDetails": {
 						"type": "string"
 					}
 				},
 				"required": [
-					"name",
-					"message"
+					"errorCode",
+					"errorMessage"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -85,15 +86,21 @@
 							}
 						}
 					},
-					"500": {
+					"400": {
 						"description": "Internal Server Error",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Error"
+									"$ref": "#/components/schemas/ErrorResponse"
 								},
 								"examples": {
-									"Example 1": {}
+									"Example 1": {
+										"value": {
+											"errorCode": 400,
+											"errorMessage": "Invalid user data",
+											"errorDetails": "Please provide valid username, email, and password"
+										}
+									}
 								}
 							}
 						}
@@ -149,15 +156,59 @@
 							}
 						}
 					},
-					"404": {
-						"description": "User not found",
+					"401": {
+						"description": "Unauthorized",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Error"
+									"$ref": "#/components/schemas/ErrorResponse"
 								},
 								"examples": {
-									"Example 1": {}
+									"Example 1": {
+										"value": {
+											"errorCode": 401,
+											"errorMessage": "Unauthorized",
+											"errorDetails": "Authentication credentials are missing or invalid."
+										}
+									}
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Permission Denied",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"errorCode": 403,
+											"errorMessage": "Permission Denied",
+											"errorDetails": "You do not have permission to perform this operation."
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"errorCode": 404,
+											"errorMessage": "User not found",
+											"errorDetails": "The requested user ID was not found in the system"
+										}
+									}
 								}
 							}
 						}
@@ -167,10 +218,16 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Error"
+									"$ref": "#/components/schemas/ErrorResponse"
 								},
 								"examples": {
-									"Example 1": {}
+									"Example 1": {
+										"value": {
+											"errorCode": 500,
+											"errorMessage": "Internal Server Error",
+											"errorDetails": "An unexpected error occurred while processing the request"
+										}
+									}
 								}
 							}
 						}
