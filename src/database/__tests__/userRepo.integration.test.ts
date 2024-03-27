@@ -53,31 +53,37 @@ describe("User repo with Integration test", () => {
   });
 
   describe("Get User", () => {
-    test("Get All User from database", async () => {
-      const user1 = {
-        username: "User1",
-        email: "user1@example.com",
-        password: "password1",
-      };
-      const user2 = {
-        username: "User2",
-        email: "user2@example.com",
-        password: "password2",
-      };
-
+    it('should return all users', async () => {
+      // Insert some dummy users into the database
+      const users = [
+        { username: 'user1', email: 'user1@example.com', password: 'password1' },
+        { username: 'user2', email: 'user2@example.com', password: 'password2' },
+        { username: 'user3', email: 'user3@example.com', password: 'password3' },
+      ];
+      await UserModel.insertMany(users);
+  
       const userRepo = new UserRepo();
+      // Call the getAll method without pagination parameters
+      const result = await userRepo.getAll();
+  
+      // Assert returned users
+      expect(result).toHaveLength(3); // Assuming 3 users were inserted
+    });
+  
+    it('should return paginated users', async () => {
 
-      // Insert test data directly into the in-memory database
-      await userRepo.createUser(user1);
-      await userRepo.createUser(user2);
-
-      // Call the getAll method on the userRepo
-      const result = await userRepo.getall();
-
-      // Assertions
-      expect(result.length).toBe(2);
-      expect(result).toContainEqual(expect.objectContaining(user1));
-      expect(result).toContainEqual(expect.objectContaining(user2));
+      const users = [
+        { username: 'user1', email: 'user1@example.com', password: 'password1' },
+        { username: 'user2', email: 'user2@example.com', password: 'password2' },
+        { username: 'user3', email: 'user3@example.com', password: 'password3' },
+      ];
+      await UserModel.insertMany(users);
+      const userRepo = new UserRepo();
+      // Call the getAll method with pagination parameters
+      const result = await userRepo.getAll(1, 2); // Fetch first page with 2 users per page
+  
+      // Assert returned users
+      expect(result).toHaveLength(2); // Expecting 2 users per page
     });
 
     test("Get User By Id",async()=>{

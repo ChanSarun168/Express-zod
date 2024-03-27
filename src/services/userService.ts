@@ -18,8 +18,8 @@ export class UserService {
   }
 
   // get all user
-  async getAllUser():Promise<any>{
-    return await this.repo.getall();
+  async getAllUser(page?: number, perPage?: number): Promise<any> {
+    return await this.repo.getAll(page, perPage);
   }
 
   // Update user

@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { number } from 'zod';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 // Define the interface for the user document
 export interface IUser extends Document {
@@ -15,14 +15,9 @@ const UserSchema = new Schema<IUser>({
   email: { type: String, required: true },
   password: { type: String, required: true },
   // Define more fields here
-},
-{
-  toJSON: {
-    transform(doc, ret) {
-      delete ret.__v;
-    },
-  },
 });
 
+UserSchema.plugin(mongoosePaginate);
+
 // Creating and exporting the User model
-export const  UserModel = mongoose.model<IUser>('User', UserSchema);
+export const UserModel: mongoose.PaginateModel<IUser> = mongoose.model<IUser, mongoose.PaginateModel<IUser>>('User', UserSchema);

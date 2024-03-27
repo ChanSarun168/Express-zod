@@ -24,9 +24,12 @@ describe("User Repo with Unit test", () => {
         password: "password2",
       },
     ];
-    (UserModel.find as jest.Mock).mockResolvedValue(users); // convert
+    // Mocking UserModel.find to return a query object
+  (UserModel.find as jest.Mock).mockReturnValue({
+    exec: jest.fn().mockResolvedValue(users), // Mocking exec() to resolve to predefined users
+  }); // convert
     const userRepo = new UserRepo();
-    const result = await userRepo.getall();
+    const result = await userRepo.getAll();
     expect(result).toEqual(users);
     expect(UserModel.find).toHaveBeenCalledTimes(1);
   });

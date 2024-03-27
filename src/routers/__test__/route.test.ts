@@ -60,6 +60,7 @@ describe("User Routes", () => {
       expect(response.body.status).toBe('success');
       expect(response.body.message).toBe('User found!!!');
       expect(response.body.data).toEqual({
+        __v:0,
         _id: user._id.toString(),
         username: user.username,
         password:user.password,

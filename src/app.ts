@@ -40,7 +40,7 @@ app.get(
             },
           },
           menu: {
-            backgroundColor: "#ffffff",
+            backgroundColor: "#Ffc0cb",
           },
         },
       },

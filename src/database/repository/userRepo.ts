@@ -21,8 +21,18 @@ export class UserRepo {
       return user;
   }
 
-  async getall():Promise<any>{
-    return await UserModel.find({});
+  async getAll(page?: number, perPage?: number): Promise<any> {
+    let query = UserModel.find({});
+
+    // Apply pagination if provided
+    if (page && perPage) {
+      const skip = (page - 1) * perPage;
+      query = query.skip(skip).limit(perPage);
+    }
+
+    // Execute the query
+    const users = await query.exec();
+    return users;
   }
 
   
