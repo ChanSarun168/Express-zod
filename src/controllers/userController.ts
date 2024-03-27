@@ -34,16 +34,66 @@ export class UserController extends Controller {
   }
 
   @Get("/")
+  @Response<ErrorResponse>(StatusCode.NoContent, "No Content", {
+    errorCode: StatusCode.NoContent,
+    errorMessage: "No Content",
+    errorDetails:
+      "The server successfully processed the request, but there is no content to return",
+  })
+  // error 403
+  @Response<ErrorResponse>(StatusCode.Forbidden, "Permission Denied", {
+    errorCode: StatusCode.Forbidden,
+    errorMessage: "Permission Denied",
+    errorDetails: "You do not have permission to perform this operation.",
+  })
+  // error 401
+  @Response<ErrorResponse>(StatusCode.Unauthorized, "Unauthorized", {
+    errorCode: StatusCode.Unauthorized,
+    errorMessage: "Unauthorized",
+    errorDetails: "Authentication credentials are missing or invalid.",
+  })
+  // error 500
+  @Response<ErrorResponse>(
+    StatusCode.InternalServerError,
+    "Internal Server Error",
+    {
+      errorCode: StatusCode.InternalServerError,
+      errorMessage: "Internal Server Error",
+      errorDetails: "An unexpected error occurred while processing the request",
+    }
+  )
   public async getAll(): Promise<any> {
     return await this.userService.getAllUser();
   }
 
   @Post("/")
-  @Response<ErrorResponse>(StatusCode.BadRequest, "Internal Server Error", {
+  @Response<ErrorResponse>(StatusCode.BadRequest, "Bad Request", {
     errorCode: StatusCode.BadRequest,
     errorMessage: "Invalid user data",
     errorDetails: "Please provide valid username, email, and password",
   })
+  // error 403
+  @Response<ErrorResponse>(StatusCode.Forbidden, "Permission Denied", {
+    errorCode: StatusCode.Forbidden,
+    errorMessage: "Permission Denied",
+    errorDetails: "You do not have permission to perform this operation.",
+  })
+  // error 401
+  @Response<ErrorResponse>(StatusCode.Unauthorized, "Unauthorized", {
+    errorCode: StatusCode.Unauthorized,
+    errorMessage: "Unauthorized",
+    errorDetails: "Authentication credentials are missing or invalid.",
+  })
+  // error 500
+  @Response<ErrorResponse>(
+    StatusCode.InternalServerError,
+    "Internal Server Error",
+    {
+      errorCode: StatusCode.InternalServerError,
+      errorMessage: "Internal Server Error",
+      errorDetails: "An unexpected error occurred while processing the request",
+    }
+  )
   public async createUser(@Body() requestBody: User): Promise<any> {
     const { username, email, password } = requestBody;
     await this.userService.addUser({ username, email, password });

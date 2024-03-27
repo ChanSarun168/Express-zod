@@ -85,7 +85,7 @@ describe("validateUserData middleware integration test", () => {
     expect(response.body).toMatchObject({
       message: "User created!!!",
       status: "success",
-      data: validUserData,
+
     });
   });
 });

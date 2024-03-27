@@ -17,7 +17,7 @@ userRouter.get('/', async (_req, res, next) => {
     if (users.length > 0) {
       res.status(200).json({ status: 'success', message: 'Users list found!!!', data: users });
     } else {
-      throw new BaseCustomError('Users list not found!!!', StatusCode.NotFound);
+      throw new BaseCustomError('No Users in System', StatusCode.NoContent);
     }
   } catch (error) {
     next(error);

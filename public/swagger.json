@@ -70,6 +70,82 @@
 								"schema": {}
 							}
 						}
+					},
+					"204": {
+						"description": "No Content",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"errorCode": 204,
+											"errorMessage": "No Content",
+											"errorDetails": "The server successfully processed the request, but there is no content to return"
+										}
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"errorCode": 401,
+											"errorMessage": "Unauthorized",
+											"errorDetails": "Authentication credentials are missing or invalid."
+										}
+									}
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Permission Denied",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"errorCode": 403,
+											"errorMessage": "Permission Denied",
+											"errorDetails": "You do not have permission to perform this operation."
+										}
+									}
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"errorCode": 500,
+											"errorMessage": "Internal Server Error",
+											"errorDetails": "An unexpected error occurred while processing the request"
+										}
+									}
+								}
+							}
+						}
 					}
 				},
 				"security": [],
@@ -87,7 +163,7 @@
 						}
 					},
 					"400": {
-						"description": "Internal Server Error",
+						"description": "Bad Request",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -99,6 +175,63 @@
 											"errorCode": 400,
 											"errorMessage": "Invalid user data",
 											"errorDetails": "Please provide valid username, email, and password"
+										}
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"errorCode": 401,
+											"errorMessage": "Unauthorized",
+											"errorDetails": "Authentication credentials are missing or invalid."
+										}
+									}
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Permission Denied",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"errorCode": 403,
+											"errorMessage": "Permission Denied",
+											"errorDetails": "You do not have permission to perform this operation."
+										}
+									}
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"errorCode": 500,
+											"errorMessage": "Internal Server Error",
+											"errorDetails": "An unexpected error occurred while processing the request"
 										}
 									}
 								}
