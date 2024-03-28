@@ -10,6 +10,7 @@ import {
   Body,
   Query,
   Path,
+  Queries,
 } from "tsoa";
 import { UserService } from "../services/userService";
 import { StatusCode } from "../utils/consts";
@@ -64,11 +65,8 @@ export class UserController extends Controller {
       errorDetails: "An unexpected error occurred while processing the request",
     }
   )
-  public async getAll(
-    @Query() page?: number,
-    @Query() perPage?: number
-  ): Promise<any> {
-    return await this.userService.getAllUser(page, perPage);
+  public async getAll(@Queries() options?:{ page: number; perPage: number; }): Promise<any> {
+    return await this.userService.getAllUser(options);
   }
   @Post("/")
   @Response<ErrorResponse>(StatusCode.BadRequest, "Bad Request", {

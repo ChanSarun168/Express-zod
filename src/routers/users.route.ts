@@ -11,27 +11,31 @@ import { paginate } from 'mongoose-paginate-v2';
 export const userRouter = express.Router();
 const userController = new UserController();
 
+interface queryModel{
+  page:number,
+  perPage:number
+}
 // Inside your route handler
 userRouter.get("/", async (req, res, next) => {
   try {
-    // Pagination parameters
-    const page = parseInt(req.query.page as string) || 1;
-    const perPage = parseInt(req.query.perPage as string) || 10;
+    // Parse query parameters
+    const page = parseInt(req.query.page as string, 10) || 1;
+    const perPage = parseInt(req.query.perPage as string, 10) || 10;
 
     // Fetch users with pagination
-    const results = await UserModel.paginate({}, { page, limit: perPage });
+    const results = await userController.getAll({ page, perPage });
 
     // Check if users exist
-    if (results.docs.length > 0) {
+    if (results.length > 0) {
       res.status(200).json({
         status: "success",
         message: "Users list found!!!",
         data: {
-          users: results.docs,
+          users: results,
           pageInfo: {
             currentPage: page,
-            totalPages: results.pages,
-            totalUsers: results.total,
+            totalPages: Math.ceil(results.length / perPage),
+            totalUsers: results.length,
           },
         },
       });

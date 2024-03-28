@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document ,Model } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
 // Define the interface for the user document
@@ -17,7 +17,6 @@ const UserSchema = new Schema<IUser>({
   // Define more fields here
 });
 
-UserSchema.plugin(mongoosePaginate);
 
 // Creating and exporting the User model
-export const UserModel: mongoose.PaginateModel<IUser> = mongoose.model<IUser, mongoose.PaginateModel<IUser>>('User', UserSchema);
+export const UserModel: Model<IUser> = mongoose.model<IUser>('User', UserSchema);

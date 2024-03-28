@@ -79,8 +79,14 @@ describe("User repo with Integration test", () => {
       ];
       await UserModel.insertMany(users);
       const userRepo = new UserRepo();
+
+      const option = {
+        // Pagination parameters
+         page : 1,
+         perPage : 2
+       }
       // Call the getAll method with pagination parameters
-      const result = await userRepo.getAll(1, 2); // Fetch first page with 2 users per page
+      const result = await userRepo.getAll(option); // Fetch first page with 2 users per page
   
       // Assert returned users
       expect(result).toHaveLength(2); // Expecting 2 users per page

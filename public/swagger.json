@@ -152,8 +152,8 @@
 				"parameters": [
 					{
 						"in": "query",
-						"name": "page",
-						"required": false,
+						"name": "perPage",
+						"required": true,
 						"schema": {
 							"format": "double",
 							"type": "number"
@@ -161,8 +161,8 @@
 					},
 					{
 						"in": "query",
-						"name": "perPage",
-						"required": false,
+						"name": "page",
+						"required": true,
 						"schema": {
 							"format": "double",
 							"type": "number"
